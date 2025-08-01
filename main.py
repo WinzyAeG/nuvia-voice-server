@@ -58,3 +58,4 @@ def speak():
 def index():
     return "Nuvia Voice Server is running", 200
 
+
