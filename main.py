@@ -1,21 +1,15 @@
-from flask import Flask, request, jsonify
-import requests
-import os
-
-app = Flask(__name__)
-
-HUME_API_KEY = os.getenv("HUME_API_KEY")  # da impostare su Render
-
 @app.route("/speak", methods=["POST"])
 def speak():
     data = request.json
     text = data.get("text", "")
-    
-    # Configura l'emozione (opzionale)
+
+    if not text or len(text.strip()) < 5:
+        return jsonify({"error": "Testo troppo breve per generare voce"}), 400
+
     payload = {
         "text": text,
         "voice": {
-            "name": "emma",   # Voce Hume
+            "name": "emma",
             "language": "it"
         },
         "prosody": {
@@ -32,12 +26,10 @@ def speak():
 
     res = requests.post("https://api.hume.ai/v0/octave/generate", json=payload, headers=headers)
 
-    if res.status_code == 200:
+    try:
+        res.raise_for_status()
         audio_url = res.json()["audio_url"]
         return jsonify({"url": audio_url})
-    else:
+    except Exception as e:
+        print("Errore Hume:", res.status_code, res.text)
         return jsonify({"error": res.text}), res.status_code
-
-@app.route("/", methods=["GET"])
-def index():
-    return "Nuvia Voice Server is running", 200
