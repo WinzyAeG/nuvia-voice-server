@@ -1,3 +1,11 @@
+from flask import Flask, request, jsonify
+import requests
+import os
+
+app = Flask(__name__)
+
+HUME_API_KEY = os.getenv("HUME_API_KEY")  # assicurati che sia presente nelle Environment su Render
+
 @app.route("/speak", methods=["POST"])
 def speak():
     data = request.json
@@ -29,7 +37,11 @@ def speak():
     try:
         res.raise_for_status()
         audio_url = res.json()["audio_url"]
-        return jsonify({"url": audio_url})
+        return jsonify({ "url": audio_url })
     except Exception as e:
         print("Errore Hume:", res.status_code, res.text)
-        return jsonify({"error": res.text}), res.status_code
+        return jsonify({ "error": res.text }), res.status_code
+
+@app.route("/", methods=["GET"])
+def index():
+    return "Nuvia Voice Server is running", 200
