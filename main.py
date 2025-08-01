@@ -10,8 +10,13 @@ HUME_API_KEY = os.getenv("HUME_API_KEY")  # Inserita nelle Environment su Render
 def speak():
     data = request.json
     text = data.get("text", "")
-    emotion = data.get("emotion", "neutral")  # pronto per emozione futura
+    emotion = data.get("emotion", "neutral")
 
+    # 🔍 Log di debug
+    print("🔎 Testo ricevuto dal client:", text)
+    print("📏 Lunghezza dopo strip:", len(text.strip()))
+
+    # ❗ Controllo di sicurezza migliorato
     if not text or len(text.strip()) < 5:
         return jsonify({"error": "Testo troppo breve per generare voce"}), 400
 
@@ -53,3 +58,4 @@ def speak():
 @app.route("/", methods=["GET"])
 def index():
     return "Nuvia Voice Server is running", 200
+
