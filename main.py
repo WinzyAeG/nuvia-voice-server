@@ -42,7 +42,7 @@ def speak():
     print("🎭 Emozione:", emotion)
     print("📦 Payload inviato a Hume:", payload)
 
-    res = requests.post("https://api.hume.ai/v0/octave/generate", json=payload, headers=headers)
+    res = requests.post("https://api.hume.ai/v0/voice/generate", json=payload, headers=headers)
     print("📡 Risposta Hume:", res.status_code, res.text)
 
     if res.status_code == 200:
@@ -57,3 +57,4 @@ def speak():
 @app.route("/", methods=["GET"])
 def index():
     return "Nuvia Voice Server is running", 200
+
